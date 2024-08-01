@@ -1,8 +1,12 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const cors = require('cors');
+
 
 const app = express();
+app.use(cors());
+
 app.use(bodyParser.json());
 
 const PORT = 3000;
@@ -41,11 +45,13 @@ app.post('/authors', (req, res) => {
 app.get('/authors', async (req, res) => {
   try {
     const users = await User.find();
-    res.status(200).send(users); 
+    res.status(200).send(users);
   } catch (err) {
-    res.status(400).send(err); 
+    res.status(400).send(err);
   }
 });
+
+
 
 // Route to update an author by ID
 app.put('/authors/:id', async (req, res) => {
@@ -69,30 +75,34 @@ app.get('/authors/:id', async (req, res) => {
   const { id } = req.params;
   try {
     const user = await User.findById(id);
+    console.log(user);
     if (user) {
       res.status(200).send(user);
     } else {
       res.status(404).send({ message: 'Author not found' });
     }
   } catch (err) {
-    res.status(400).send(err); 
+    res.status(400).send(err);
   }
 });
 
-app.delete('/authors/:id', async(req,res)=>{
-  const {id} = req.params;
-  try{
+app.delete('/authors/:id', async (req, res) => {
+  const { id } = req.params;
+
+  console.log(id);
+  try {
     const user = await User.findOneAndDelete(id);
-    if(user){
-      res.status(200).send({message:'Author deleted successfully'})
+
+    console.log(user, '<---');
+    if (user) {
+      res.status(200).send({ message: 'Author deleted successfully' })
     }
-    else{
-      res.status(404).send({message:'Author not found'})
+    else {
+      res.status(404).send({ message: 'Author not found' })
     }
-    
+
   }
-  catch(err)
-  {
+  catch (err) {
     res.status(400).send(err)
   }
 })
